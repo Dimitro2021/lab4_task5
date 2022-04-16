@@ -75,6 +75,7 @@ class Character:
 
 
 class Infocharacter(Character):
+    """ gives you info """
     def __init__(self, name, description, info='', words='', weakness=None) -> None:
         super().__init__(name, description, words, weakness)
         self.info, self.known = info, False
@@ -90,8 +91,7 @@ class Infocharacter(Character):
         print(f'[{self.name} says]: {self.words}')
 
 class SupportCharacter(Character):
-    def __init__(self, name, description, words='', weakness=None) -> None:
-        super().__init__(name, description, words, weakness)
+    """ support character(tive you support) """
 
     def give_help(self, item):
         """ give help """

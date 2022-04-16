@@ -2,8 +2,9 @@
 
 import maze
 
-start, roomA, roomB, roomC = maze.Room("START"), maze.Room("room A"), maze.Room("room B"), maze.Room("room C"),
+roomA, roomB, roomC = maze.Room("room A"), maze.Room("room B"), maze.Room("room C")
 roomD, roomF, Treasure = maze.Room("room D"), maze.Room("room E"), maze.Room("ROOM")
+start = maze.Room("START")
 
 rooms = [roomA, roomB, roomC, roomD, roomF]
 
@@ -45,20 +46,20 @@ roomC.set_item(rope_ladder)
 current_room = start
 backpack = ['apple']
 
-won = False
+WIN = False
 
 print("""hello hero
 you are sent here to find gold apple, the ornament of our city
 you entered the maze. People gave you just backpack and an apple in it, there are some options for you
 this is a map of the maze""")
-with open('maze.txt', 'r') as file:
+with open('maze.txt', 'r', encoding='utf-8') as file:
     for line in file:
         print(line)
 print('Good luck')
 
 
 while True:
-    if current_room == start and won:
+    if current_room == start and WIN:
         print("Everyone congratulate you, You are a hero\
  THE END")
         break
@@ -94,20 +95,21 @@ your backpack: {backpack}
             fight_with = input()
             # Do I have this item?
             if fight_with in backpack:
-                if inhabitant.interact(fight_with) == True:
+                if inhabitant.interact(fight_with):
                     # What happens if you win?
                     if inhabitant.name == 'Sailor':
                         current_room.character = None
                         current_room = roomF if current_room == roomA else roomA
                         current_room.character = sailor
                     if inhabitant.name == 'Dwarf':
-                            print("You put the gold apple in your backpack")
-                            backpack.append('gold apple')
-                            print('You won the game. Get back to the START to end it')
-                            won = True
+                        print("You put the gold apple in your backpack")
+                        backpack.append('gold apple')
+                        print('You won the game. Get back to the START to end it')
+                        WIN = True
                     if inhabitant.name == 'Mouse':
                         current_room.character = None
-                        print("There is Dwarf in ROOM, he has a gold apple. He stole it to eat, but it is too hard. I've heard him crying there. Thank you for cheese")
+                        print("There is Dwarf in ROOM, he has a gold apple. \
+He stole it to eat, but it is too hard. I've heard him crying there. Thank you for cheese")
                         backpack.remove('cheese')
                 else:
                     # What happens if you lose?
@@ -124,7 +126,7 @@ your backpack: {backpack}
         else:
             print("There's nothing here to take!")
     elif command in [room.name for room in maze.Room.rooms]:
-        if current_room.move(command) == False:
+        if not current_room.move(command):
             print('There is no such room here')
         else:
         # Move in the given direction

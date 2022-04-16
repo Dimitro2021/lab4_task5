@@ -3,7 +3,7 @@
 import maze
 
 start, roomA, roomB, roomC = maze.Room("START"), maze.Room("room A"), maze.Room("room B"), maze.Room("room C"),
-roomD, roomF, Treasure = maze.Room("room D"), maze.Room("room E"), maze.Room("Treasure")
+roomD, roomF, Treasure = maze.Room("room D"), maze.Room("room E"), maze.Room("ROOM")
 
 rooms = [roomA, roomB, roomC, roomD, roomF]
 
@@ -50,7 +50,7 @@ won = False
 print("""hello hero
 you are sent here to find gold apple, the ornament of our city
 you entered the maze. People gave you just backpack and an apple in it, there are some options for you
-there is a maze""")
+this is a map of the maze""")
 with open('maze.txt', 'r') as file:
     for line in file:
         print(line)
@@ -60,9 +60,10 @@ print('Good luck')
 while True:
     if current_room == start and won:
         print("Everyone congratulate you, You are a hero\
-THE END")
+ THE END")
         break
     print("\n")
+    print('Current room')
     current_room.get_details()
 
     inhabitant = current_room.get_character()
@@ -72,11 +73,12 @@ THE END")
     item = current_room.get_item()
     if item is not None:
         item.describe()
-    print(r"""
-You can:
-take (take object)
-interact, talk (if there is someone in the room)
-to change the room input name of the room
+    print(f"""
+You can:\n\
+take (take object)\n\
+interact, talk (if there is someone in the room)\n\
+to change the room input name of the room\n\
+your backpack: {backpack}
 """)
 
     command = input("> ")
@@ -105,10 +107,11 @@ to change the room input name of the room
                             won = True
                     if inhabitant.name == 'Mouse':
                         current_room.character = None
-                        print("There is Dwarf in Treasure room, he has a gold apple. He stole it to eat, but it is too hard. I've heard him crying there. Thank you for cheese")
+                        print("There is Dwarf in ROOM, he has a gold apple. He stole it to eat, but it is too hard. I've heard him crying there. Thank you for cheese")
+                        backpack.remove('cheese')
                 else:
                     # What happens if you lose?
-                    print("That's not what is needed")
+                    print(f"[{inhabitant.name}]: That's not what is needed")
             else:
                 print("You don't have a " + fight_with)
         else:
@@ -120,11 +123,14 @@ to change the room input name of the room
             current_room.set_item(None)
         else:
             print("There's nothing here to take!")
-    elif current_room.move(command) != False:
+    elif command in [room.name for room in maze.Room.rooms]:
+        if current_room.move(command) == False:
+            print('There is no such room here')
+        else:
         # Move in the given direction
-        neww = current_room.move(command)
-        if current_room == Treasure and 'rope ladder' in backpack and command == 'room D':
-            neww = roomD
-        current_room = neww if neww is not None else current_room
+            neww = current_room.move(command)
+            if current_room == Treasure and 'rope ladder' in backpack and command == 'room D':
+                neww = roomD
+            current_room = neww if neww is not None else current_room
     else:
         print("I don't know how to " + command)
